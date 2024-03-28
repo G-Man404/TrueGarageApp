@@ -1,19 +1,20 @@
 from django.contrib import admin
-from .models import Engineer, Client, Motorcycle, Order, Work
+from .models import User, Engineer, Client, Motorcycle, Order, Work, Supplies, Supply, Task
 
 admin.site.register(Engineer)
 admin.site.register(Client)
 admin.site.register(Motorcycle)
 admin.site.register(Work)
-
-
-class WorkInline(admin.TabularInline):
-    model = Order.works.through
-    extra = 1
+admin.site.register(User)
+admin.site.register(Supplies)
+admin.site.register(Supply)
+admin.site.register(Task)
 
 
 class OrderAdmin(admin.ModelAdmin):
-    inlines = [WorkInline]
+    list_display = ('number', "client", "engineer", "motorcycle")
+    list_filter = ('client', 'engineer')
+    exclude = ('number',)
 
 
 admin.site.register(Order, OrderAdmin)

@@ -1,6 +1,16 @@
 from django.utils import timezone
 from django.db import models
-from django.contrib.auth.models import User
+
+
+class User(models.Model):
+    created_at = models.DateTimeField(default=timezone.now)
+    phone_number = models.CharField(max_length=15)
+    email = models.EmailField()
+    first_name = models.CharField(max_length=50)
+    last_name = models.CharField(max_length=50)
+
+    def __str__(self):
+        return f"{self.first_name} {self.first_name}"
 
 
 class Client(models.Model):
@@ -9,8 +19,6 @@ class Client(models.Model):
         User,
         on_delete=models.CASCADE,
     )
-    phone_number = models.CharField(max_length=15)
-    email = models.EmailField(default=None)
 
     def __str__(self):
         return f"{self.user.first_name} {self.user.last_name}"
@@ -24,9 +32,8 @@ class Engineer(models.Model):
     )
     status = models.CharField(
         choices=(
-            ("works", "Работает"),
-            ("on_holiday", "В отпуске"),
-            ("medical_leave", "На больничном")
+            ("work", "Работает"),
+            ("not_work", "Не работает"),
         ),
         max_length=100
     )
@@ -43,31 +50,70 @@ class Motorcycle(models.Model):
     )
     name = models.CharField(max_length=100)
     model = models.CharField(max_length=100)
+    mfg_year = models.IntegerField()
     vin = models.CharField(max_length=100)
+    state_number = models.CharField(max_length=20)
+
+    def __str__(self):
+        return f"{self.name} {self.state_number}"
+
+
+class Work(models.Model):
+    name = models.CharField(max_length=100)
+    description = models.TextField()
+    price = models.FloatField()
 
     def __str__(self):
         return self.name
 
 
-class Work(models.Model):
-    created_at = models.DateTimeField(default=timezone.now)
+class Supply(models.Model):
     name = models.CharField(max_length=100)
     description = models.TextField()
+    price = models.FloatField()
+
+    def __str__(self):
+        return self.name
+
+
+class Supplies(models.Model):
+    supply = models.ForeignKey(
+        Supply,
+        on_delete=models.CASCADE
+    )
+    count = models.FloatField()
+
+    def __str__(self):
+        return f"{self.supply.name} - {self.count}"
+
+
+class Task(models.Model):
+    created_at = models.DateTimeField(default=timezone.now)
+    work = models.ForeignKey(
+        Work,
+        on_delete=models.CASCADE
+    )
+    supplies = models.ForeignKey(
+        Supplies,
+        on_delete=models.CASCADE
+    )
     status = models.CharField(
         choices=(
-            ("at_work", "В работе"),
-            ("waiting_to_start", "Ожидает начала"),
-            ("waiting_to_details", "Ожидает детали"),
-            ("requires_clarification", "Требует уточнения деталий")
+            ("in_queue", "В очереди"),
+            ("in_progress", "В работе"),
+            ("awaiting_approval", "На согласовании"),
+            ("waiting_for_delivery", "Ожидает поставку"),
+            ("ready", "Готов")
         ),
         max_length=100
     )
 
     def __str__(self):
-        return self.name
+        return self.work.name
 
 
 class Order(models.Model):
+    number = models.CharField(max_length=20, default=None)
     created_at = models.DateTimeField(default=timezone.now)
     client = models.ForeignKey(
         Client,
@@ -81,12 +127,26 @@ class Order(models.Model):
         Motorcycle,
         on_delete=models.CASCADE
     )
-    works = models.ManyToManyField(
-        Work
+    task = models.ManyToManyField(
+        Task
+    )
+    description = models.TextField()
+    comments = models.TextField()
+    status = models.CharField(
+        choices=(
+            ("in_queue", "В очереди"),
+            ("in_progress", "В работе"),
+            ("ready", "Готов")
+        ),
+        max_length=100
     )
 
-    name = models.CharField(max_length=100)
-    description = models.TextField()
+    def save(self, *args, **kwargs):
+        if not self.number:
+            last_object = Order.objects.last()
+            last_id = last_object.id if last_object else -1
+            self.number = f"24-{last_id + 100:04d}"
+        super().save(*args, **kwargs)
 
     def __str__(self):
-        return self.name
+        return self.number
