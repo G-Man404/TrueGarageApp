@@ -76,40 +76,6 @@ class Supply(models.Model):
         return self.name
 
 
-class Supplies(models.Model):
-    supply = models.ForeignKey(
-        Supply,
-        on_delete=models.CASCADE
-    )
-    count = models.FloatField()
-
-    def __str__(self):
-        return f"{self.supply.name} - {self.count}"
-
-
-class Task(models.Model):
-    created_at = models.DateTimeField(default=timezone.now)
-    work = models.ForeignKey(
-        Work,
-        on_delete=models.CASCADE
-    )
-    supplies = models.ForeignKey(
-        Supplies,
-        on_delete=models.CASCADE
-    )
-    status = models.CharField(
-        choices=(
-            ("in_queue", "В очереди"),
-            ("in_progress", "В работе"),
-            ("awaiting_approval", "На согласовании"),
-            ("waiting_for_delivery", "Ожидает поставку"),
-            ("ready", "Готов")
-        ),
-        max_length=100
-    )
-
-    def __str__(self):
-        return self.work.name
 
 
 class Order(models.Model):
@@ -126,9 +92,6 @@ class Order(models.Model):
     motorcycle = models.ForeignKey(
         Motorcycle,
         on_delete=models.CASCADE
-    )
-    task = models.ManyToManyField(
-        Task
     )
     description = models.TextField()
     comments = models.TextField()
@@ -150,3 +113,41 @@ class Order(models.Model):
 
     def __str__(self):
         return self.number
+
+
+class Task(models.Model):
+    order = models.ForeignKey(Order, on_delete=models.CASCADE)
+    created_at = models.DateTimeField(default=timezone.now)
+    work = models.ForeignKey(
+        Work,
+        on_delete=models.CASCADE
+    )
+    status = models.CharField(
+        choices=(
+            ("in_queue", "В очереди"),
+            ("in_progress", "В работе"),
+            ("awaiting_approval", "На согласовании"),
+            ("waiting_for_delivery", "Ожидает поставку"),
+            ("ready", "Готов")
+        ),
+        max_length=100
+    )
+
+    def __str__(self):
+        return self.work.name
+
+
+class Supplies(models.Model):
+    order = models.ForeignKey(Order, on_delete=models.CASCADE)
+
+    supply = models.ForeignKey(
+        Supply,
+        on_delete=models.CASCADE
+    )
+    count = models.FloatField()
+
+    def __str__(self):
+        return f"{self.supply.name} - {self.count}"
+
+
+

@@ -1,20 +1,30 @@
 from django.contrib import admin
-from .models import User, Engineer, Client, Motorcycle, Order, Work, Supplies, Supply, Task
+from .models import Order, Task, Supplies, Client, Engineer, Motorcycle, Work, Supply, User
 
-admin.site.register(Engineer)
-admin.site.register(Client)
-admin.site.register(Motorcycle)
-admin.site.register(Work)
-admin.site.register(User)
-admin.site.register(Supplies)
-admin.site.register(Supply)
-admin.site.register(Task)
+
+class SuppliesInline(admin.TabularInline):
+    model = Supplies
+    extra = 1
+
+
+class TaskInline(admin.TabularInline):
+    model = Task
+    extra = 1
 
 
 class OrderAdmin(admin.ModelAdmin):
-    list_display = ('number', "client", "engineer", "motorcycle")
-    list_filter = ('client', 'engineer')
-    exclude = ('number',)
+    inlines = [
+        TaskInline,
+        SuppliesInline,
+    ]
+    list_display = ['number', 'created_at', 'client', 'engineer', 'motorcycle', 'status']
+    list_filter = ['status']
 
 
 admin.site.register(Order, OrderAdmin)
+admin.site.register(Client)
+admin.site.register(Engineer)
+admin.site.register(Motorcycle)
+admin.site.register(Work)
+admin.site.register(Supply)
+admin.site.register(User)
