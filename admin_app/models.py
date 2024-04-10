@@ -14,7 +14,7 @@ class User(models.Model):
 
 
 class Client(models.Model):
-    description = models.TextField()
+    description = models.TextField(blank=True)
     user = models.ForeignKey(
         User,
         on_delete=models.CASCADE,
@@ -25,7 +25,7 @@ class Client(models.Model):
 
 
 class Engineer(models.Model):
-    description = models.TextField()
+    description = models.TextField(blank=True)
     user = models.ForeignKey(
         User,
         on_delete=models.CASCADE,
@@ -35,6 +35,7 @@ class Engineer(models.Model):
             ("work", "Работает"),
             ("not_work", "Не работает"),
         ),
+        default="work",
         max_length=100
     )
 
@@ -60,7 +61,7 @@ class Motorcycle(models.Model):
 
 class Work(models.Model):
     name = models.CharField(max_length=100)
-    description = models.TextField()
+    description = models.TextField(blank=True)
     price = models.FloatField()
 
     def __str__(self):
@@ -69,7 +70,7 @@ class Work(models.Model):
 
 class Supply(models.Model):
     name = models.CharField(max_length=100)
-    description = models.TextField()
+    description = models.TextField(blank=True)
     price = models.FloatField()
 
     def __str__(self):
@@ -93,22 +94,23 @@ class Order(models.Model):
         Motorcycle,
         on_delete=models.CASCADE
     )
-    description = models.TextField()
-    comments = models.TextField()
+    description = models.TextField(blank=True)
+    comments = models.TextField(blank=True)
     status = models.CharField(
         choices=(
             ("in_queue", "В очереди"),
             ("in_progress", "В работе"),
             ("ready", "Готов")
         ),
+        default="in_queue",
         max_length=100
     )
 
     def save(self, *args, **kwargs):
         if not self.number:
             last_object = Order.objects.last()
-            last_id = last_object.id if last_object else -1
-            self.number = f"24-{last_id + 100:04d}"
+            last_id = last_object.id if last_object else 0
+            self.number = f"24-{last_id + 99:04d}"
         super().save(*args, **kwargs)
 
     def __str__(self):
@@ -130,6 +132,7 @@ class Task(models.Model):
             ("waiting_for_delivery", "Ожидает поставку"),
             ("ready", "Готов")
         ),
+        default="in_queue",
         max_length=100
     )
 
@@ -144,7 +147,7 @@ class Supplies(models.Model):
         Supply,
         on_delete=models.CASCADE
     )
-    count = models.FloatField()
+    count = models.FloatField(default=1)
 
     def __str__(self):
         return f"{self.supply.name} - {self.count}"
