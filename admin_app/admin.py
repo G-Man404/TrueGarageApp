@@ -1,8 +1,42 @@
+import os
+import tempfile
+
+from docxtpl import DocxTemplate
 from openpyxl import Workbook
+
 from django.contrib import admin
 from django.http import HttpResponse
 
 from .models import Order, Task, Supplies, Client, Engineer, Motorcycle, Work, Supply, User
+
+
+def get_full_price(order: Order):
+    full_price = 0
+    for task in order.task_set.all():
+        full_price += task.work.price
+    for supply in order.supplies_set.all():
+        full_price += supply.supply.price * supply.count
+    return full_price
+
+
+def print_order(modeladmin, request, queryset):
+    for obj in queryset:
+        response = HttpResponse(content_type='application/vnd.openxmlformats-officedocument.wordprocessingml.document')
+        response['Content-Disposition'] = f'attachment; filename="file_{obj.id}.docx"'
+        context = {
+            "client": obj.client,
+            "motorcycle": obj.motorcycle,
+            "tasks": obj.task_set.all(),
+            "supplies": obj.supplies_set.all(),
+            "full_price": get_full_price(obj),
+            "number": obj.number,
+            "created_at": obj.created_at.date(),
+        }
+        file = DocxTemplate("templates/template.docx")
+        file.render(context)
+        file.save(response)
+
+    return response
 
 
 def export_to_excel(modeladmin, request, queryset):
@@ -42,10 +76,12 @@ class ClientAdmin(admin.ModelAdmin):
 
     def get_user_name(self, obj):
         return f"{obj.user.first_name} {obj.user.last_name}"
+
     get_user_name.short_description = 'Name'
 
     def get_user_phone_number(self, obj):
         return obj.user.phone_number
+
     get_user_phone_number.short_description = 'Phone Number'
 
 
@@ -67,7 +103,7 @@ class OrderAdmin(admin.ModelAdmin):
     list_filter = ['status']
     exclude = ["number", ]
 
-    actions = [export_to_excel]
+    actions = [export_to_excel, print_order]
 
 
 class SupplyAdmin(admin.ModelAdmin):

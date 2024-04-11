@@ -38,7 +38,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     "admin_app.apps.AdminAppConfig",
-    "nested_inline"
+    "templated_docs"
 ]
 
 MIDDLEWARE = [
