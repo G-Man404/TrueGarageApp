@@ -29,6 +29,7 @@ def print_order(modeladmin, request, queryset):
             "tasks": obj.task_set.all(),
             "supplies": obj.supplies_set.all(),
             "full_price": get_full_price(obj),
+            "discount": obj.discount,
             "number": obj.number,
             "created_at": obj.created_at.date(),
         }

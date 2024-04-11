@@ -94,6 +94,7 @@ class Order(models.Model):
         Motorcycle,
         on_delete=models.CASCADE
     )
+    discount = models.FloatField(default=0)
     description = models.TextField(blank=True)
     comments = models.TextField(blank=True)
     status = models.CharField(
