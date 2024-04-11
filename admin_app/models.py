@@ -18,6 +18,7 @@ class Client(models.Model):
     user = models.ForeignKey(
         User,
         on_delete=models.CASCADE,
+        related_name="UserList"
     )
 
     def __str__(self):
@@ -84,15 +85,18 @@ class Order(models.Model):
     created_at = models.DateTimeField(default=timezone.now)
     client = models.ForeignKey(
         Client,
-        on_delete=models.CASCADE
+        on_delete=models.CASCADE,
+        related_name="ClientList"
     )
     engineer = models.ForeignKey(
         Engineer,
-        on_delete=models.CASCADE
+        on_delete=models.CASCADE,
+        related_name="Engineer"
     )
     motorcycle = models.ForeignKey(
         Motorcycle,
-        on_delete=models.CASCADE
+        on_delete=models.CASCADE,
+        related_name="Motorcycle"
     )
     discount = models.FloatField(default=0)
     description = models.TextField(blank=True)

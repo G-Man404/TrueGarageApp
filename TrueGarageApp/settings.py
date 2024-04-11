@@ -38,7 +38,6 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     "admin_app.apps.AdminAppConfig",
-    "templated_docs"
 ]
 
 MIDDLEWARE = [

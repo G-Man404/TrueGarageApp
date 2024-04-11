@@ -101,7 +101,9 @@ class OrderAdmin(admin.ModelAdmin):
         SuppliesInline,
     ]
     list_display = ['number', 'created_at', 'client', 'engineer', 'motorcycle', 'status']
-    list_filter = ['status']
+    list_filter = ['status', 'engineer']
+    search_fields = ['number', "client__user__first_name", "engineer__user__first_name",
+                     'motorcycle__vin', 'motorcycle__state_number']
     exclude = ["number", ]
 
     actions = [export_to_excel, print_order]
