@@ -23,18 +23,16 @@ services:
       - web
   db:
     image: postgres:14.5
+    volumes:
+      - db_data:/var/lib/postgresql/data
     env_file:
       - .env
     environment:
       POSTGRES_DB: ${DB_NAME}
       POSTGRES_USER: ${DB_USER}
       POSTGRES_PASSWORD: ${DB_PASSWORD}
-    volumes:
-      - truegarage-data:/var/lib/postgresql/data
-
     ports:
       - "5432:5432"
 volumes:
   static_volume:
-  truegarage-data:
-  pgadmin-data:
+  db_data:
