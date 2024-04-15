@@ -32,8 +32,8 @@ def print_order(modeladmin, request, queryset):
             "deposit": obj.deposit,
             "full_price_with_discount": (full_task_price * (1 - obj.task_discount / 100)) +
                                         (full_supply_price * (1 - obj.supply_discount / 100)),
-            "full_price_with_deposit": (full_task_price * (1 - obj.task_discount / 100)) +
-                                       (full_supply_price * (1 - obj.supply_discount / 100)) - obj.deposit,
+            "full_price_with_deposit": round((full_task_price * (1 - obj.task_discount / 100)) +
+                                       (full_supply_price * (1 - obj.supply_discount / 100)) - obj.deposit, 2),
             "number": obj.number,
             "created_at": obj.created_at.date(),
 
@@ -121,12 +121,14 @@ class OrderAdmin(admin.ModelAdmin):
 
     def engineers_list(self, obj):
         return ", ".join([str(engineer.user) for engineer in obj.engineers.all()])
+
     engineers_list.short_description = 'Engineers'
 
     inlines = [
         TaskInline,
         SuppliesInline,
     ]
+    filter_horizontal = ('engineers',)
     list_display = ['number', 'created_at', 'client', 'engineers_list', 'motorcycle', 'status']
     list_filter = ['status', 'engineers']
     search_fields = ['number', "client__user__first_name", "engineer__user__first_name",
