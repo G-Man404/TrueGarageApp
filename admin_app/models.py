@@ -4,13 +4,13 @@ from django.db import models
 
 class User(models.Model):
     created_at = models.DateTimeField(default=timezone.now)
-    phone_number = models.CharField(max_length=15)
-    email = models.EmailField()
+    phone_number = models.CharField(max_length=15, blank=True)
+    email = models.EmailField(blank=True)
     first_name = models.CharField(max_length=50)
     last_name = models.CharField(max_length=50)
 
     def __str__(self):
-        return f"{self.first_name} {self.first_name}"
+        return f"{self.first_name} {self.last_name}"
 
 
 class Client(models.Model):
@@ -78,8 +78,6 @@ class Supply(models.Model):
         return self.name
 
 
-
-
 class Order(models.Model):
     number = models.CharField(max_length=20, default=None)
     created_at = models.DateTimeField(default=timezone.now)
@@ -88,17 +86,17 @@ class Order(models.Model):
         on_delete=models.CASCADE,
         related_name="ClientList"
     )
-    engineer = models.ForeignKey(
-        Engineer,
-        on_delete=models.CASCADE,
-        related_name="Engineer"
+    engineers = models.ManyToManyField(
+        Engineer
     )
     motorcycle = models.ForeignKey(
         Motorcycle,
         on_delete=models.CASCADE,
         related_name="Motorcycle"
     )
-    discount = models.FloatField(default=0)
+    deposit = models.FloatField(default=0, verbose_name="Предоплата (Руб.):")
+    task_discount = models.FloatField(default=0, verbose_name="Скидка на работы (%):")
+    supply_discount = models.FloatField(default=0, verbose_name="Скидка на запчасти (%):")
     description = models.TextField(blank=True)
     comments = models.TextField(blank=True)
     status = models.CharField(
@@ -129,6 +127,7 @@ class Task(models.Model):
         Work,
         on_delete=models.CASCADE
     )
+    count = models.FloatField(default=1)
     status = models.CharField(
         choices=(
             ("in_queue", "В очереди"),
