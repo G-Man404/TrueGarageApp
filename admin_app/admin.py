@@ -15,7 +15,10 @@ from .models import Order, Task, Supplies, Client, Engineer, Motorcycle, Work, S
 def print_order(modeladmin, request, queryset):
     for obj in queryset:
         response = HttpResponse(content_type='application/vnd.openxmlformats-officedocument.wordprocessingml.document')
-        response['Content-Disposition'] = f'attachment; filename="file_{obj.id}.docx"'
+        response['Content-Disposition'] = (f'attachment; filename=order'
+                                           f'_{obj.motorcycle.model}'
+                                           f'_{obj.client.user.first_name}'
+                                           f'_{obj.client.user.last_name}.docx')
         full_task_price = sum([task.work.price * task.count for task in obj.task_set.all()])
         full_supply_price = sum([supply.supply.price * supply.count for supply in obj.supplies_set.all()])
         context = {
@@ -118,18 +121,11 @@ class OrderAdmin(admin.ModelAdmin):
         return super().change_view(
             request, object_id, form_url, extra_context=extra_context,
         )
-
-    def engineers_list(self, obj):
-        return ", ".join([str(engineer.user) for engineer in obj.engineers.all()])
-
-    engineers_list.short_description = 'Engineers'
-
     inlines = [
         TaskInline,
         SuppliesInline,
     ]
-    filter_horizontal = ('engineers',)
-    list_display = ['number', 'created_at', 'client', 'engineers_list', 'motorcycle', 'status']
+    list_display = ['number', 'created_at', 'client', 'engineers', 'motorcycle', 'status']
     list_filter = ['status', 'engineers']
     search_fields = ['number', "client__user__first_name", "engineer__user__first_name",
                      'motorcycle__vin', 'motorcycle__state_number']

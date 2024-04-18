@@ -86,8 +86,10 @@ class Order(models.Model):
         on_delete=models.CASCADE,
         related_name="ClientList"
     )
-    engineers = models.ManyToManyField(
-        Engineer
+    engineers = models.ForeignKey(
+        Engineer,
+        on_delete=models.CASCADE,
+        related_name="EngineerList",
     )
     motorcycle = models.ForeignKey(
         Motorcycle,
@@ -128,6 +130,13 @@ class Task(models.Model):
         on_delete=models.CASCADE
     )
     count = models.FloatField(default=1)
+    engineer = models.ForeignKey(
+        Engineer,
+        on_delete=models.CASCADE,
+        related_name="Engineer",
+        blank=True,
+        null=True
+    )
     status = models.CharField(
         choices=(
             ("in_queue", "В очереди"),
