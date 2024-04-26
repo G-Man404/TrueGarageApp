@@ -78,7 +78,7 @@ class SuppliesInline(admin.TabularInline):
 class TaskInline(admin.TabularInline):
     model = Task
     extra = 0
-    autocomplete_fields = ['work']
+    autocomplete_fields = ['work', 'engineer']
 
 
 class ClientAdmin(admin.ModelAdmin):
