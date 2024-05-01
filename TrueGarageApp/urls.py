@@ -17,11 +17,10 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include, re_path
 
-from admin_app.views import ClientOrdersView
+from admin_app.views import ClientOrdersView, VinOrdersView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('api/v1/client/<str:phone_number>/orders/', ClientOrdersView.as_view(), name='client-orders'),
-    path('api/v1/auth/', include('djoser.urls')),
-    re_path(r'^api/v1/auth/', include('djoser.urls.authtoken')),
+    path('api/v1/orders/client_number/<str:phone_number>/', ClientOrdersView.as_view(), name='client-orders'),
+    path('api/v1/orders/vin/<str:vin>/', VinOrdersView.as_view(), name='vin-orders'),
 ]

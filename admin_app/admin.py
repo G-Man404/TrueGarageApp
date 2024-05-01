@@ -114,11 +114,11 @@ class OrderAdmin(admin.ModelAdmin):
     def change_view(self, request, object_id, form_url='', extra_context=None):
         extra_context = extra_context or {}
         order = Order.objects.get(pk=object_id)
-        extra_context['total_work_price'] = sum(task.work.price * task.count for task in order.task_set.all())
+        extra_context['total_work_price'] = sum(task.work.price * task.count for task in order.tasks.all())
         extra_context['total_work_price_with_discount'] = (extra_context['total_work_price'] *
                                                            (1 - order.task_discount / 100))
         extra_context['total_supply_price'] = sum(
-            supply.supply.price * supply.count for supply in order.supplies_set.all())
+            supply.supply.price * supply.count for supply in order.supplies.all())
         extra_context['total_supply_price_with_discount'] = (extra_context['total_supply_price'] *
                                                              (1 - order.supply_discount / 100))
         extra_context['total_price_with_discount'] = (extra_context['total_work_price_with_discount'] +

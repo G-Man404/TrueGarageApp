@@ -16,10 +16,14 @@ class WorkSerializer(serializers.ModelSerializer):
 
 class TaskSerializer(serializers.ModelSerializer):
     work = WorkSerializer(read_only=True)
+    status = serializers.SerializerMethodField()
 
     class Meta:
         model = Task
         fields = ('work', 'count', 'status', 'created_at')
+
+    def get_status(self, obj):
+        return obj.get_status_display()
 
 
 class SupplySerializer(serializers.ModelSerializer):
@@ -40,7 +44,11 @@ class OrderSerializer(serializers.ModelSerializer):
     motorcycle = MotorcycleSerializer(read_only=True)
     tasks = TaskSerializer(many=True, read_only=True)
     supplies = SuppliesSerializer(many=True, read_only=True)
+    status = serializers.SerializerMethodField()
 
     class Meta:
         model = Order
-        fields = ('motorcycle', 'created_at', 'status', 'tasks', 'supplies')
+        fields = ('motorcycle', 'created_at', 'status', 'tasks', 'supplies', 'number')
+
+    def get_status(self, obj):
+        return obj.get_status_display()

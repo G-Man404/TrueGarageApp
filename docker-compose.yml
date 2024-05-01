@@ -26,6 +26,13 @@ services:
       POSTGRES_PASSWORD: ${DB_PASSWORD}
     ports:
       - "5432:5432"
+  client_bot:
+    build: ./client_bot
+    command: python main.py
+    volumes:
+      - ./client_bot:/client_bot
+    depends_on:
+      - web
 volumes:
   static_volume:
   db_data:
