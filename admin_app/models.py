@@ -124,7 +124,7 @@ class Order(models.Model):
 
 
 class Task(models.Model):
-    order = models.ForeignKey(Order, on_delete=models.CASCADE)
+    order = models.ForeignKey(Order, on_delete=models.CASCADE, related_name='tasks')
     created_at = models.DateTimeField(default=timezone.now)
     work = models.ForeignKey(
         Work,
@@ -155,7 +155,7 @@ class Task(models.Model):
 
 
 class Supplies(models.Model):
-    order = models.ForeignKey(Order, on_delete=models.CASCADE)
+    order = models.ForeignKey(Order, on_delete=models.CASCADE, related_name='supplies')
 
     supply = models.ForeignKey(
         Supply,
