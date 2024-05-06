@@ -2,7 +2,7 @@ version: "3.9"
 services:
   web:
     build: .
-    command: bash -c "pip3 install -r requirements.txt && python3 manage.py makemigrations && python3 manage.py migrate && python manage.py runserver 0.0.0.0:8000"
+    command: bash -c "python3 manage.py makemigrations && python3 manage.py migrate && python manage.py runserver 0.0.0.0:8000"
     restart: always
     volumes:
       - .:/code
@@ -28,7 +28,7 @@ services:
       - "5432:5432"
   client_bot:
     build: ./client_bot
-    command: python main.py
+    command: python3 main.py
     volumes:
       - ./client_bot:/client_bot
     depends_on:

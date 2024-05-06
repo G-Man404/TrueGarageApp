@@ -1,6 +1,7 @@
 import re
 
 from aiogram import Router, F, types
+from aiogram.enums import ParseMode
 from aiogram.filters import CommandStart
 from aiogram.fsm.context import FSMContext
 from aiogram.types import Message
@@ -9,7 +10,7 @@ import requests
 from src.states.check_states import CheckStates
 from src.core.config import headers, api_url
 from src.keyboards.check_keyboard import by_vin_kb
-
+from src.messages.messages import check_order_status_text
 router = Router()
 
 
@@ -28,8 +29,9 @@ async def check_status_by_vin(message: Message, state: FSMContext):
         orders = response.json()
         if orders:
             for order in orders:
-                await message.answer(f"Заказ {order['number']} находится в статусе {order['status']}",
-                                     reply_markup=by_vin_kb(vin))
+                await message.answer(check_order_status_text(order),
+                                     reply_markup=by_vin_kb(vin),
+                                     parse_mode=ParseMode.HTML)
         else:
             await message.answer("Заказов с таким vin не найдено")
     else:
@@ -45,10 +47,11 @@ async def update_by_vin(callback: types.CallbackQuery, state: FSMContext):
         orders = response.json()
         if orders:
             for order in orders:
-                new_text = f"Заказ {order['number']} находится в статусе {order['status']}"
+                new_text = check_order_status_text(order)
                 if new_text != callback.message.text:
-                    await callback.message.edit_text(f"Заказ {order['number']} находится в статусе {order['status']}",
-                                                     reply_markup=by_vin_kb(vin))
+                    await callback.message.edit_text(check_order_status_text(order),
+                                                     reply_markup=by_vin_kb(vin),
+                                                     parse_mode=ParseMode.HTML)
         else:
             await callback.message.edit_text("Заказов с таким vin не найдено")
     else:
