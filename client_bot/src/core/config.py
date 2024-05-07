@@ -13,3 +13,5 @@ headers = {
     "Content-Type": "application/json",
     "Authorization": f"Api-key {api_key}"
 }
+
+admins_id = [460440605]
