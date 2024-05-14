@@ -14,4 +14,4 @@ headers = {
     "Authorization": f"Api-key {api_key}"
 }
 
-admins_id = [460440605]
+admins_id = [460440605, 208257006]

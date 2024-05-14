@@ -19,13 +19,13 @@ def print_order(modeladmin, request, queryset):
                                            f'_{obj.motorcycle.model}'
                                            f'_{obj.client.user.first_name}'
                                            f'_{obj.client.user.last_name}.docx')
-        full_task_price = sum([task.work.price * task.count for task in obj.task_set.all()])
-        full_supply_price = sum([supply.supply.price * supply.count for supply in obj.supplies_set.all()])
+        full_task_price = sum([task.work.price * task.count for task in obj.tasks.all()])
+        full_supply_price = sum([supply.supply.price * supply.count for supply in obj.supplies.all()])
         context = {
             'client': obj.client,
             'motorcycle': obj.motorcycle,
-            'tasks': obj.task_set.all(),
-            'supplies': obj.supplies_set.all(),
+            'tasks': obj.tasks.all(),
+            'supplies': obj.supplies.all(),
             'full_task_price': full_task_price,
             'full_task_price_with_discount': full_task_price * (1 - obj.task_discount / 100),
             'full_supply_price': full_supply_price,
