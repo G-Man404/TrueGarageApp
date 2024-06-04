@@ -157,8 +157,8 @@ class WorkAdmin(admin.ModelAdmin):
 
 
 class LogAdmin(admin.ModelAdmin):
-    list_display = ["user", "content_type", "action_flag", "object_repr", "change_message"]
-    search_fields = ["object_repr", "change_message", "action_flag", "content_type"]
+    list_display = ["action_time", "user", "content_type", "action_flag", "object_repr", "change_message"]
+    search_fields = ["object_repr", "change_message"]
     list_filter = ["user", "action_flag", "content_type"]
 
 
