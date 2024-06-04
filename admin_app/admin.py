@@ -8,6 +8,7 @@ from openpyxl import Workbook
 
 from django.contrib import admin
 from django.http import HttpResponse
+from django.contrib.admin.models import LogEntry
 
 from .models import Order, Task, Supplies, Client, Engineer, Motorcycle, Work, Supply, User
 
@@ -30,8 +31,6 @@ def print_order(modeladmin, request, queryset):
             'full_task_price_with_discount': full_task_price * (1 - obj.task_discount / 100),
             'full_supply_price': full_supply_price,
             'full_supply_price_with_discount': full_supply_price * (1 - obj.supply_discount / 100),
-            'task_discount': obj.task_discount,
-            'supply_discount': obj.supply_discount,
             'deposit': obj.deposit,
             'full_price_with_discount': (full_task_price * (1 - obj.task_discount / 100)) +
                                         (full_supply_price * (1 - obj.supply_discount / 100)),
@@ -134,7 +133,7 @@ class OrderAdmin(admin.ModelAdmin):
     ]
     list_display = ['number', 'created_at', 'client', 'engineers', 'motorcycle', 'status']
     list_filter = ['status', 'engineers']
-    search_fields = ['number', 'client__user__first_name', 'engineer__user__first_name',
+    search_fields = ['number', 'client__user__first_name', 'engineers__user__first_name',
                      'motorcycle__vin', 'motorcycle__state_number']
     exclude = ['number', ]
 
@@ -157,6 +156,12 @@ class WorkAdmin(admin.ModelAdmin):
     search_fields = ['name']
 
 
+class LogAdmin(admin.ModelAdmin):
+    list_display = ["user", "content_type", "action_flag", "object_repr", "change_message"]
+    search_fields = ["object_repr", "change_message", "action_flag", "content_type"]
+    list_filter = ["user", "action_flag", "content_type"]
+
+
 admin.site.register(Client, ClientAdmin)
 admin.site.register(Engineer, EngineerAdmin)
 admin.site.register(Motorcycle, MotorcycleAdmin)
@@ -164,3 +169,4 @@ admin.site.register(Order, OrderAdmin)
 admin.site.register(Supply, SupplyAdmin)
 admin.site.register(User, UserAdmin)
 admin.site.register(Work, WorkAdmin)
+admin.site.register(LogEntry, LogAdmin)
