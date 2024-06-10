@@ -18,8 +18,10 @@ router = Router()
 async def send_message_to_admin(message, phone_number):
     text = f"Новое сообщение!\nОт: @{message.from_user.username}\nНомер: <a herf='tel:{phone_number}'>{phone_number}</a>\nТекст: {message.text}"
     for admin_id in admins_id:
-        await message.bot.send_message(admin_id, text, parse_mode=ParseMode.HTML)
-
+        try:
+            await message.bot.send_message(admin_id, text, parse_mode=ParseMode.HTML)
+        except:
+            pass
 
 @router.message(F.text.lower() == "на главную")
 async def back_to_start(message: Message, state: FSMContext):
