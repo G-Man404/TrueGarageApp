@@ -4,10 +4,9 @@ from rest_framework_api_key.permissions import HasAPIKey
 
 from .models import User, Order, Client
 
-
 from django.shortcuts import get_object_or_404
 
-from .serializers import OrderSerializer
+from .serializers import OrderSerializer, ByNumberSerializer
 
 
 class ClientOrdersView(generics.ListAPIView):
@@ -22,8 +21,16 @@ class ClientOrdersView(generics.ListAPIView):
 
 class VinOrdersView(generics.ListAPIView):
     serializer_class = OrderSerializer
-    permission_classes = [HasAPIKey]
 
     def get_queryset(self):
         vin = self.kwargs['vin']
         return Order.objects.filter(motorcycle__vin=vin)
+
+
+class NumberOrdersView(generics.RetrieveAPIView):
+    serializer_class = ByNumberSerializer
+    lookup_field = "number"
+    def get_queryset(self):
+        number = self.kwargs['number']
+        return Order.objects.filter(number=number)
+

@@ -110,6 +110,7 @@ class MotorcycleAdmin(admin.ModelAdmin):
 class OrderAdmin(admin.ModelAdmin):
     change_form_template = 'admin_app/order_change_form.html'
     autocomplete_fields = ['client', 'engineers', 'motorcycle']
+
     def change_view(self, request, object_id, form_url='', extra_context=None):
         extra_context = extra_context or {}
         order = Order.objects.get(pk=object_id)
