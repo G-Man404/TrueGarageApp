@@ -19,7 +19,9 @@ def choose_order_kb(orders):
 def send_contact_kb():
     kb = ReplyKeyboardBuilder()
     kb.button(text="Поделиться контактом", request_contact=True)
-    return kb.as_markup(resize_keyboard=True, one_time_keyboard=True)
+    kb.button(text="На главную")
+    kb.adjust(1)
+    return kb.as_markup(resize_keyboard=True)
 
 def welcome_kb():
     kb = ReplyKeyboardBuilder()
