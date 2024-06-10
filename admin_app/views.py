@@ -30,6 +30,7 @@ class VinOrdersView(generics.ListAPIView):
 class NumberOrdersView(generics.RetrieveAPIView):
     serializer_class = ByNumberSerializer
     lookup_field = "number"
+
     def get_queryset(self):
         number = self.kwargs['number']
         return Order.objects.filter(number=number)

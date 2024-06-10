@@ -65,6 +65,8 @@ async def input_vin(message: Message, state: FSMContext):
 @router.message(CheckStates.check_order_by_contact_state)
 async def check_orders_by_number(message: Message, state: FSMContext):
     number = message.contact.phone_number
+    if number[0] != "+":
+        number = f"+{number}"
     response = requests.get(f"{api_url}/api/v1/orders/client_number/{number}", headers=headers)
     if response.status_code == 200:
         orders = response.json()
@@ -74,7 +76,7 @@ async def check_orders_by_number(message: Message, state: FSMContext):
         else:
             await message.answer("Заказов с таким номером не найдено", reply_markup=back_kb())
     else:
-        await message.answer("Произошла ошибка при получении данных о заказах", reply_markup=back_kb())
+        await message.answer("Заказов с таким номером не найдено", reply_markup=back_kb())
 
 
 @router.callback_query(CheckStates.check_order_by_number_state, F.data.regexp(re.compile(r'order_(\d+)')))
