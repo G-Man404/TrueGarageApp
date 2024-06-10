@@ -51,9 +51,9 @@ async def check_orders_by_vin(message: Message, state: FSMContext):
             await message.answer("Выберите заказ наряд:", reply_markup=choose_order_kb(orders))
             await state.set_state(CheckStates.check_order_by_number_state)
         else:
-            await message.answer("Заказов с таким vin не найдено")
+            await message.answer("Заказов с таким vin не найдено", reply_markup=back_kb())
     else:
-        await message.answer("Произошла ошибка при получении данных о заказах")
+        await message.answer("Произошла ошибка при получении данных о заказах", reply_markup=back_kb())
 
 
 @router.message(CheckStates.start_state, F.text.lower() == "поиск заказа по номеру телефона")
@@ -72,9 +72,9 @@ async def check_orders_by_number(message: Message, state: FSMContext):
             await message.answer("Выберите заказ наряд:", reply_markup=choose_order_kb(orders))
             await state.set_state(CheckStates.check_order_by_number_state)
         else:
-            await message.answer("Заказов с таким номером не найдено")
+            await message.answer("Заказов с таким номером не найдено", reply_markup=back_kb())
     else:
-        await message.answer("Произошла ошибка при получении данных о заказах")
+        await message.answer("Произошла ошибка при получении данных о заказах", reply_markup=back_kb())
 
 
 @router.callback_query(CheckStates.check_order_by_number_state, F.data.regexp(re.compile(r'order_(\d+)')))
