@@ -9,7 +9,7 @@ import requests
 
 from src.states.check_states import CheckStates
 from src.core.config import headers, api_url, admins_id
-from src.keyboards.check_keyboard import by_vin_kb, welcome_kb, back_kb, input_call_kb, choose_order_kb, send_contact_kb
+from src.keyboards.check_keyboard import welcome_kb, back_kb, input_call_kb, choose_order_kb, send_contact_kb
 from src.messages.messages import check_order_status_text, welcome_text
 
 router = Router()

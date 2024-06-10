@@ -7,30 +7,26 @@ def back_kb():
     return kb.as_markup(resize_keyboard=True)
 
 
-def by_vin_kb(vin: str):
-    kb = InlineKeyboardBuilder()
-    kb.button(text="Обновить", callback_data=f"update_by_vin_{vin}")
-    return kb.as_markup()
-
-
 def choose_order_kb(orders):
     kb = InlineKeyboardBuilder()
     for order in orders:
         kb.button(text=f"№{order['number']} | {order['motorcycle']['model']} | {order['status']}",
                   callback_data=f"order_{order['number']}")
+    kb.adjust(1)
     return kb.as_markup()
 
 
 def send_contact_kb():
     kb = ReplyKeyboardBuilder()
     kb.button(text="Поделиться контактом", request_contact=True)
-    return kb.as_markup(resize_keyboard=True)
+    return kb.as_markup(resize_keyboard=True, one_time_keyboard=True)
 
 def welcome_kb():
     kb = ReplyKeyboardBuilder()
     kb.button(text="Поиск заказа по VIN")
     kb.button(text="Поиск заказа по номеру телефона")
     kb.button(text="Заказать звонок")
+    kb.adjust(1)
     return kb.as_markup(resize_keyboard=True)
 
 
