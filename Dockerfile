@@ -10,6 +10,7 @@ WORKDIR /code
 
 # Install dependencies
 COPY requirements.txt /code/
+RUN python3 -m pip install --upgrade pip
 RUN pip3 install --no-cache-dir --index-url https://pypi.org/simple/ -r requirements.txt
 
 
