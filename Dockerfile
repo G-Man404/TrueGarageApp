@@ -10,7 +10,7 @@ WORKDIR /code
 
 # Install dependencies
 COPY requirements.txt /code/
-pip3 install --no-cache-dir --index-url https://pypi.org/simple/ -r requirements.txt
+pip3 install --no-cache-dir --index-url https://pypi.org/simple/ -r requirements.txt/
 
 
 # Copy project
