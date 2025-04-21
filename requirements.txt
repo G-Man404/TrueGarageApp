@@ -1,4 +1,4 @@
-Django~=5.0.4
+Django~=5.2
 docxtpl~=0.16.8
 openpyxl~=3.1.2
 psycopg2-binary==2.9.3
