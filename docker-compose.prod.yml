@@ -46,3 +46,8 @@ services:
 volumes:
   static_volume:
   db_data:
+networks:
+  default:
+    driver: bridge
+    driver_opts:
+      com.docker.network.driver.mtu: 1450
